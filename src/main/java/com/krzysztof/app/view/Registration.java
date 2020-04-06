@@ -6,7 +6,9 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.progressbar.ProgressBar;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
@@ -35,13 +37,14 @@ public class Registration extends VerticalLayout {
 
     public Registration() {
         labelHelloRegistration.setText("Witaj w rejestracji!");
-        textFieldName.setPlaceholder("Imie");
+        textFieldName.setPlaceholder("Imię");
         textFieldLastName.setPlaceholder("Nazwisko");
         textFieldLogin.setPlaceholder("Login");
         textFieldEmail.setPlaceholder("E-mail");
-        passwordField.setPlaceholder("Haslo");
+        passwordField.setPlaceholder("Hasło");
 
-        buttonRegistration.setText("Zarejestroj sie");
+
+        buttonRegistration.setText("Zarejestrój się");
 
         buttonMenu.setText("Wróć do menu głównego");
         buttonMenu.addClickListener(buttonClickEvent -> {
@@ -51,7 +54,11 @@ public class Registration extends VerticalLayout {
         add(labelHelloRegistration, textFieldName, textFieldLastName, textFieldEmail, textFieldLogin, passwordField, buttonRegistration, buttonMenu);
 
         buttonRegistration.addClickListener(buttonClickEvent -> {
-            addUsers();
+            if(passwordField.getValue().length() < 5){
+                Notification.show("Hasło zbyt krótkie!");
+            } else {
+                addUsers();
+            }
         });
     }
 
