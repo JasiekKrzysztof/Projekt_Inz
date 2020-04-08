@@ -16,6 +16,35 @@ public class Questionnaire {
     String name;
     Date date;
 
+    public Questionnaire() {
+    }
 
+    public Questionnaire(String name, Date date){
+        this.name = name;
+        this.date = date;
+    }
 
+    public Long getIdQuestionnaire() {
+        return idQuestionnaire;
+    }
+
+    public void setIdQuestionnaire(Long idQuestionnaire) {
+        this.idQuestionnaire = idQuestionnaire;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 }
