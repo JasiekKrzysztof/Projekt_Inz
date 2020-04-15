@@ -24,9 +24,9 @@ public class Registration extends VerticalLayout {
     UsersRepo usersRepo;
 
     TextField textFieldName = new TextField();
-    TextField textFieldLastName = new TextField();
     TextField textFieldLogin = new TextField();
     TextField textFieldEmail = new TextField();
+
     Label labelHelloRegistration = new Label();
 
     PasswordField passwordField = new PasswordField();
@@ -38,7 +38,6 @@ public class Registration extends VerticalLayout {
     public Registration() {
         labelHelloRegistration.setText("Witaj w rejestracji!");
         textFieldName.setPlaceholder("Imię");
-        textFieldLastName.setPlaceholder("Nazwisko");
         textFieldLogin.setPlaceholder("Login");
         textFieldEmail.setPlaceholder("E-mail");
         passwordField.setPlaceholder("Hasło");
@@ -48,23 +47,24 @@ public class Registration extends VerticalLayout {
 
         buttonMenu.setText("Wróć do menu głównego");
         buttonMenu.addClickListener(buttonClickEvent -> {
-            UI.getCurrent().getPage().setLocation("http://localhost:8080/Menu");
+            UI.getCurrent().getPage().setLocation("http://localhost:8080");
         });
 
-        add(labelHelloRegistration, textFieldName, textFieldLastName, textFieldEmail, textFieldLogin, passwordField, buttonRegistration, buttonMenu);
+        add(labelHelloRegistration, textFieldName, textFieldEmail, textFieldLogin, passwordField, buttonRegistration, buttonMenu);
 
         buttonRegistration.addClickListener(buttonClickEvent -> {
             if(passwordField.getValue().length() < 5){
                 Notification.show("Hasło zbyt krótkie!");
             } else {
                 addUsers();
+                Notification.show("Konto zostało stworzone!");
             }
         });
     }
 
     @EventListener(ApplicationReadyEvent.class)
     public void addUsers(){
-        Users user = new Users(textFieldName.getValue(), textFieldLastName.getValue(), textFieldLogin.getValue(), textFieldEmail.getValue(), passwordField.getValue());
+        Users user = new Users(textFieldName.getValue(), textFieldEmail.getValue(), textFieldLogin.getValue(), passwordField.getValue());
         usersRepo.save(user);
     }
 }

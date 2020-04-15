@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication (exclude = ErrorMvcAutoConfiguration.class)
 @EnableJpaRepositories
-@EnableAutoConfiguration
 public class AppApplication {
 
     public static void main(String[] args) {

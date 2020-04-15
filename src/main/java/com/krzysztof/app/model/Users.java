@@ -16,7 +16,6 @@ public class Users {
     Long idUsers;
 
     String name;
-    String lastName;
     String login;
     String password;
     String email;
@@ -24,9 +23,8 @@ public class Users {
     public Users() {
     }
 
-    public Users(String name, String lastName, String email, String login, String password) {
+    public Users(String name, String email, String login, String password) {
         this.name = name;
-        this.lastName = lastName;
         this.email = email;
         this.login = login;
         this.password = password;
@@ -46,14 +44,6 @@ public class Users {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public String getLogin() {
@@ -85,7 +75,6 @@ public class Users {
         return "Users{" +
                 "idUsers=" + idUsers +
                 ", name='" + name + '\'' +
-                ", lastName='" + lastName + '\'' +
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
