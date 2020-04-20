@@ -6,7 +6,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import org.springframework.web.bind.annotation.*;
 
-@Route("test")
+@RequestMapping("/test")
 @RestController
 public class test extends VerticalLayout {
 
