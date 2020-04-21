@@ -25,15 +25,17 @@ public class Users implements UserDetails {
     String login;
     String password;
     String email;
+    String role;
 
     public Users() {
     }
 
-    public Users(String name, String email, String login, String password) {
+    public Users(String name, String email, String login, String password, String role) {
         this.name = name;
         this.email = email;
         this.login = login;
         this.password = password;
+        this.role = role;
     }
 
     public Long getIdUsers() {
@@ -62,11 +64,11 @@ public class Users implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("USER"));
+        return Collections.singleton(new SimpleGrantedAuthority(role));
     }
 
     public String getPassword() {
-        return password;
+        return "{bcrypt}"+password;
     }
 
     @Override
@@ -104,6 +106,14 @@ public class Users implements UserDetails {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     @Override

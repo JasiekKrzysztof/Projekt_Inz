@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 
 @EnableWebSecurity
 @Configuration
@@ -24,15 +26,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.httpBasic()
-                .and().authorizeRequests()
+//        http.httpBasic()
+                http.authorizeRequests()
                 .antMatchers("/").permitAll()
-                //.antMatchers("Registration").permitAll()
-                .antMatchers("/test").permitAll()
-                .antMatchers("/h2").hasRole("ADMIN")
-                .antMatchers("/user").hasAnyRole("ADMIN", "USER")
-                //.antMatchers("/api/**").hasAnyRole("ADMIN", "USER")
-                .and().formLogin().permitAll()
+                .antMatchers("/h2").hasAnyRole("ADMIN")
+//                .antMatchers("/api/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers("/api/**").permitAll()
+                .and().formLogin().defaultSuccessUrl("/api/user-menu").permitAll()
                 .and().csrf().disable().logout().permitAll()
                 .and().headers().frameOptions().disable();
     }
@@ -74,6 +74,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+
         auth.userDetailsService(userDetailsServiceClass);
     }
 

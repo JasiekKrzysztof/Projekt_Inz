@@ -58,12 +58,12 @@ public class Menu extends VerticalLayout {
     }
 
     public void addUsers(){
-        Users user = new Users(textFieldName.getValue(), textFieldEmail.getValue(), textFieldLogin.getValue(),  encoder.encode(passwordField.getValue()));
+        Users user = new Users(textFieldName.getValue(), textFieldEmail.getValue(), textFieldLogin.getValue(), encoder.encode(passwordField.getValue()), "ROLE_USER");
         //user.setPassword(encoder.encode(user.getPassword()));
         usersRepo.save(user);
 
 
-        System.out.println(usersRepo.findByLogin(user.getLogin()));
+//        System.out.println(usersRepo.findByLogin(user.getLogin()));
     }
 
     public void loginButton(){
@@ -95,5 +95,4 @@ public class Menu extends VerticalLayout {
             }
         });
     }
-
 }
