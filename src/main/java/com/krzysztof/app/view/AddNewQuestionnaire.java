@@ -1,18 +1,16 @@
 package com.krzysztof.app.view;
 
 import com.krzysztof.app.model.Questionnaire;
-import com.krzysztof.app.model.Users;
 import com.krzysztof.app.repo.QuestionnaireRepo;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.theme.Theme;
+import com.vaadin.flow.theme.lumo.Lumo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -21,6 +19,7 @@ import java.util.List;
 
 @RestController
 @Route("api/new-questionnaire")
+@Theme(value = Lumo.class, variant = Lumo.DARK)
 public class AddNewQuestionnaire extends VerticalLayout {
 
     @Autowired
@@ -47,7 +46,7 @@ public class AddNewQuestionnaire extends VerticalLayout {
     private  List<TextField> textList = new ArrayList<TextField>();
 
     public AddNewQuestionnaire() {
-
+        setAlignItems(Alignment.CENTER);
         add(titleTextField, numberField, nextButton);
         setNumberField();
         nextButton.addClickListener(buttonClickEvent -> {
@@ -80,8 +79,7 @@ public class AddNewQuestionnaire extends VerticalLayout {
         for (int i=0; i<=numberField.getValue()-1; i++){
             add(textList.get(i));
         }
-        //add(questionTextField1, questionTextField2, questionTextField3, questionTextField4, questionTextField5, questionTextField6, questionTextField7, questionTextField8, questionTextField9, questionTextField10);
-        setEndButton();
+         setEndButton();
         setGoToMenuButton();
 
     }
@@ -93,7 +91,9 @@ public class AddNewQuestionnaire extends VerticalLayout {
         endButton.addClickListener(buttonClickEvent -> {
             Date date = new Date();
 
-            Questionnaire questionnaire = new Questionnaire(titleTextField.getValue(), date, questionTextField1.getValue(), questionTextField2.getValue(),questionTextField3.getValue(), questionTextField4.getValue(), questionTextField5.getValue(), questionTextField6.getValue(), questionTextField7.getValue(), questionTextField8.getValue(), questionTextField9.getValue(), questionTextField10.getValue());
+            Questionnaire questionnaire = new Questionnaire(titleTextField.getValue(), date, questionTextField1.getValue(), questionTextField2.getValue(),
+                    questionTextField3.getValue(), questionTextField4.getValue(), questionTextField5.getValue(), questionTextField6.getValue(), questionTextField7.getValue(),
+                    questionTextField8.getValue(), questionTextField9.getValue(), questionTextField10.getValue());
             questionnaireRepo.save(questionnaire);
         });
     }

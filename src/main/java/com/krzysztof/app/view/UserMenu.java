@@ -4,8 +4,11 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.theme.Theme;
+import com.vaadin.flow.theme.lumo.Lumo;
 
 @Route("api/user-menu")
+@Theme(value = Lumo.class, variant = Lumo.DARK)
 public class UserMenu extends HorizontalLayout {
 
     Button addNewQuestButton = new Button();
@@ -13,6 +16,7 @@ public class UserMenu extends HorizontalLayout {
 
     public UserMenu() {
 
+        setAlignItems(Alignment.CENTER);
         setAddNewQuestButton();
         setViewQuestButton();
 

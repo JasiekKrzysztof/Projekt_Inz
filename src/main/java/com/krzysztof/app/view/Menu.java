@@ -14,6 +14,8 @@ import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.theme.Theme;
+import com.vaadin.flow.theme.lumo.Lumo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +29,7 @@ import javax.servlet.http.HttpSession;
 
 @Route("")
 @StyleSheet("/css/style.css")
+@Theme(value = Lumo.class, variant = Lumo.DARK)
 public class Menu extends VerticalLayout {
 
     @Autowired
@@ -51,7 +54,7 @@ public class Menu extends VerticalLayout {
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public Menu() {
-
+        setAlignItems(Alignment.CENTER);
         loginButton();
         registrationUser();
 
@@ -75,7 +78,7 @@ public class Menu extends VerticalLayout {
     }
 
     public void registrationUser(){
-        labelHelloRegistration.setText("Zalogój się lub jeśli nie masz konta, stwórz je");
+        labelHelloRegistration.setText("Zaloguj się lub jeśli nie masz konta, stwórz je");
         textFieldName.setPlaceholder("Imię");
         textFieldLogin.setPlaceholder("Login");
         textFieldEmail.setPlaceholder("E-mail");
