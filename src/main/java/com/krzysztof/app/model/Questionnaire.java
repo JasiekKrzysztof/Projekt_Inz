@@ -30,21 +30,6 @@ public class Questionnaire {
     public Questionnaire() {
     }
 
-    public Questionnaire(String name, Date date,  String question1,  String question2,  String question3,  String question4,  String question5,  String question6,  String question7,  String question8, String question9,  String question10){
-        this.name = name;
-        this.date = date;
-        this.question1 = question1;
-        this.question2 = question2;
-        this.question3 = question3;
-        this.question4 = question4;
-        this.question5 = question5;
-        this.question6 = question6;
-        this.question7 = question7;
-        this.question8 = question8;
-        this.question9 = question9;
-        this.question10 = question10;
-
-    }
 
     public Long getIdQuestionnaire() {
         return idQuestionnaire;
@@ -148,5 +133,100 @@ public class Questionnaire {
 
     public void setQuestion10(String question10) {
         this.question10 = question10;
+    }
+
+
+    // Builder - Fabryka  https://devcave.pl/effective-java/wzorzec-projektowy-builder
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+        String name;
+        Date date;
+        String question1;
+        String question2;
+        String question3;
+        String question4;
+        String question5;
+        String question6;
+        String question7;
+        String question8;
+        String question9;
+        String question10;
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder date(Date date) {
+            this.date = date;
+            return this;
+        }
+
+        public Builder question1(String question1) {
+            this.question1 = question1;
+            return this;
+        }
+        public Builder question2(String question2) {
+            this.question2 = question2;
+            return this;
+        }
+        public Builder question3(String question3) {
+            this.question3 = question3;
+            return this;
+        }
+        public Builder question4(String question4) {
+            this.question4 = question4;
+            return this;
+        }
+        public Builder question5(String question5) {
+            this.question5 = question5;
+            return this;
+        }
+        public Builder question6(String question6) {
+            this.question6 = question6;
+            return this;
+        }
+        public Builder question7(String question7) {
+            this.question7 = question7;
+            return this;
+        }
+        public Builder question8(String question8) {
+            this.question8 = question8;
+            return this;
+        }
+        public Builder question9(String question9) {
+            this.question9 = question9;
+            return this;
+        }
+        public Builder question10(String question10) {
+            this.question10 = question10;
+            return this;
+        }
+
+
+
+        public Questionnaire build() {
+
+            Questionnaire questionnaire = new Questionnaire();
+            questionnaire.name = name;
+            questionnaire.date = date;
+            questionnaire.question1 = question1;
+            questionnaire.question2 = question2;
+            questionnaire.question3 = question3;
+            questionnaire.question4 = question4;
+            questionnaire.question5 = question5;
+            questionnaire.question6 = question6;
+            questionnaire.question7 = question7;
+            questionnaire.question8 = question8;
+            questionnaire.question9 = question9;
+            questionnaire.question10 = question10;
+
+            return questionnaire;
+        }
+
+
     }
 }

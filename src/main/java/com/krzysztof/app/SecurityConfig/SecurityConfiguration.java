@@ -30,8 +30,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 http.authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers("/h2").hasAnyRole("ADMIN")
-//                .antMatchers("/api/**").hasAnyRole("ADMIN", "USER")
-                .antMatchers("/api/**").permitAll()
+                .antMatchers("/api/**").hasAnyRole("ADMIN", "USER")
+//                .antMatchers("/api/**").permitAll()
                 .and().formLogin().defaultSuccessUrl("/api/user-menu").permitAll()
                 .and().csrf().disable().logout().permitAll()
                 .and().headers().frameOptions().disable();
@@ -74,7 +74,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-
         auth.userDetailsService(userDetailsServiceClass);
     }
 

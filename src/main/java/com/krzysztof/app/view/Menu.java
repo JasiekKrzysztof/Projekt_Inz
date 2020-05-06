@@ -1,36 +1,27 @@
 package com.krzysztof.app.view;
 
+import com.krzysztof.app.SecurityConfig.Encoder;
 import com.krzysztof.app.model.Users;
 import com.krzysztof.app.repo.UsersRepo;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
-import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpSession;
 
 @Route("")
 @StyleSheet("/css/style.css")
 @Theme(value = Lumo.class, variant = Lumo.DARK)
 public class Menu extends VerticalLayout {
+
 
     @Autowired
     UsersRepo usersRepo;
@@ -50,8 +41,9 @@ public class Menu extends VerticalLayout {
 //    public BCryptPasswordEncoder bCryptPasswordEncoder(){
 //        return new BCryptPasswordEncoder();
 //    };
+    BCryptPasswordEncoder encoder = Encoder.getInstance();
 
-    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+   // BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public Menu() {
         setAlignItems(Alignment.CENTER);

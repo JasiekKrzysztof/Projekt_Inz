@@ -4,6 +4,7 @@ import com.krzysztof.app.model.Questionnaire;
 import com.krzysztof.app.repo.QuestionnaireRepo;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -91,9 +92,26 @@ public class AddNewQuestionnaire extends VerticalLayout {
         endButton.addClickListener(buttonClickEvent -> {
             Date date = new Date();
 
-            Questionnaire questionnaire = new Questionnaire(titleTextField.getValue(), date, questionTextField1.getValue(), questionTextField2.getValue(),
-                    questionTextField3.getValue(), questionTextField4.getValue(), questionTextField5.getValue(), questionTextField6.getValue(), questionTextField7.getValue(),
-                    questionTextField8.getValue(), questionTextField9.getValue(), questionTextField10.getValue());
+            Notification.show("Ankieta została dodana pomyślnie!").setPosition(Notification.Position.MIDDLE);
+
+
+//            Questionnaire questionnaire = new Questionnaire(titleTextField.getValue(), date, questionTextField1.getValue(), questionTextField2.getValue(),
+//                    questionTextField3.getValue(), questionTextField4.getValue(), questionTextField5.getValue(), questionTextField6.getValue(), questionTextField7.getValue(),
+//                    questionTextField8.getValue(), questionTextField9.getValue(), questionTextField10.getValue());
+            Questionnaire questionnaire = Questionnaire.builder()
+                    .name(titleTextField.getValue())
+                    .date(date)
+                    .question1(questionTextField1.getValue())
+                    .question2(questionTextField2.getValue())
+                    .question3(questionTextField3.getValue())
+                    .question4(questionTextField4.getValue())
+                    .question5(questionTextField5.getValue())
+                    .question6(questionTextField6.getValue())
+                    .question7(questionTextField7.getValue())
+                    .question8(questionTextField8.getValue())
+                    .question9(questionTextField9.getValue())
+                    .question10(questionTextField10.getValue())
+                    .build();
             questionnaireRepo.save(questionnaire);
         });
     }

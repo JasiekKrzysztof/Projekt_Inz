@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 public class UserDetailsServiceClass implements UserDetailsService {
 
     private UsersRepo usersRepo;
+    private String userName;
 
     @Autowired
     public UserDetailsServiceClass(UsersRepo usersRepo) {
@@ -23,7 +24,11 @@ public class UserDetailsServiceClass implements UserDetailsService {
     public UserDetails loadUserByUsername(String userLogin) throws UsernameNotFoundException {
 
         //Users user = usersRepo.findByLogin(userLogin);
-
+        userName = userLogin;
         return usersRepo.findByLogin(userLogin);
+    }
+
+    public String getUserName() {
+        return userName;
     }
 }

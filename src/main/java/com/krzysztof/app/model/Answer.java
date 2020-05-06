@@ -10,10 +10,10 @@ public class Answer {
     Long idAnswer;
 
     @OneToOne
-    private Questionnaire idQuestionnaire;
+    private Questionnaire questionnaire;
 
     @OneToOne
-    private Users idUser;
+    private Users users;
 
     String answer1;
     String answer2;
@@ -26,6 +26,25 @@ public class Answer {
     String answer9;
     String answer10;
 
+    public Answer(Questionnaire questionnaire, Users users,
+                  String answer1, String answer2, String answer3, String answer4, String answer5, String answer6, String answer7, String answer8, String answer9, String answer10) {
+        this.questionnaire = questionnaire;
+        this.users = users;
+        this.answer1 = answer1;
+        this.answer2 = answer2;
+        this.answer3 = answer3;
+        this.answer4 = answer4;
+        this.answer5 = answer5;
+        this.answer6 = answer6;
+        this.answer7 = answer7;
+        this.answer8 = answer8;
+        this.answer9 = answer9;
+        this.answer10 = answer10;
+    }
+
+    public Answer() {
+    }
+
     public Long getIdAnswer() {
         return idAnswer;
     }
@@ -34,20 +53,20 @@ public class Answer {
         this.idAnswer = idAnswer;
     }
 
-    public Questionnaire getIdQuestionnaire() {
-        return idQuestionnaire;
+    public Questionnaire getQuestionnaire() {
+        return questionnaire;
     }
 
-    public void setIdQuestionnaire(Questionnaire idQuestionnaire) {
-        this.idQuestionnaire = idQuestionnaire;
+    public void setQuestionnaire(Questionnaire questionnaire) {
+        this.questionnaire = questionnaire;
     }
 
-    public Users getIdUser() {
-        return idUser;
+    public Users getUsers() {
+        return users;
     }
 
-    public void setIdUser(Users idUser) {
-        this.idUser = idUser;
+    public void setUsers(Users users) {
+        this.users = users;
     }
 
     public String getAnswer1() {
