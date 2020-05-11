@@ -1,1 +1,1 @@
-# Aplikacja do ankietyzacji.
+# Aplikacja webowa do ankietyzacji.
