@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Route("api/view-questionnaire")
 @Theme(value = Lumo.class, variant = Lumo.DARK)
@@ -34,6 +35,7 @@ public class ViewQuestionnaire extends VerticalLayout {
     Grid<Answer> answerGrid;
     UserDetailsServiceClass userDetailsServiceClass;
     List<String> questList = new ArrayList<>();
+
 
     @Autowired
     public ViewQuestionnaire(QuestionnaireRepo questionnaireRepo, UsersRepo usersRepo, AnswerRepo answerRepo, UserDetailsServiceClass userDetailsServiceClass) {
@@ -142,16 +144,68 @@ public class ViewQuestionnaire extends VerticalLayout {
     }
 
     private void completedSurveys(String userName){
+
+
+
         answerGrid.setItems(answerRepo.findAllByUsers(usersRepo.findByLogin(userName)));
-        answerGrid.setColumns("answer1");
+//        answerGrid.setColumns(answerRepo.findAllById(questionnaireRepo.findByIdQuestionnaire()));
+
+
+        answerGrid.setColumns("questionnaire");
+
 
         Collection<Button> editButtons = Collections.newSetFromMap(new WeakHashMap<>());
 
         answerGrid.addComponentColumn(questionnaire -> {
+//            answerGrid.setColumns(answerRepo.findById(questionnaire.getIdAnswer().longValue()).get().getQuestionnaire().getName());
             Button showButton = new Button("Sprawdź odpowiedzi");
             showButton.addClickListener(e -> {
                 answerGrid.setVisible(false);
                 questionnaireGrid.setVisible(false);
+
+                List<String> showQuestList = new ArrayList<>();
+
+                showQuestList.add(questionnaire.getQuestionnaire().getQuestion1());
+                showQuestList.add(questionnaire.getQuestionnaire().getQuestion2());
+                showQuestList.add(questionnaire.getQuestionnaire().getQuestion3());
+                showQuestList.add(questionnaire.getQuestionnaire().getQuestion4());
+                showQuestList.add(questionnaire.getQuestionnaire().getQuestion5());
+                showQuestList.add(questionnaire.getQuestionnaire().getQuestion6());
+                showQuestList.add(questionnaire.getQuestionnaire().getQuestion7());
+                showQuestList.add(questionnaire.getQuestionnaire().getQuestion8());
+                showQuestList.add(questionnaire.getQuestionnaire().getQuestion9());
+                showQuestList.add(questionnaire.getQuestionnaire().getQuestion10());
+
+                List<String> showAnswerList = new ArrayList<>();
+
+                showAnswerList.add(questionnaire.getAnswer1());
+                showAnswerList.add(questionnaire.getAnswer2());
+                showAnswerList.add(questionnaire.getAnswer3());
+                showAnswerList.add(questionnaire.getAnswer4());
+                showAnswerList.add(questionnaire.getAnswer5());
+                showAnswerList.add(questionnaire.getAnswer6());
+                showAnswerList.add(questionnaire.getAnswer7());
+                showAnswerList.add(questionnaire.getAnswer8());
+                showAnswerList.add(questionnaire.getAnswer9());
+                showAnswerList.add(questionnaire.getAnswer10());
+
+                for (int i=0; i<showQuestList.size(); i++){
+                    if (showQuestList.get(i) != "") {
+                        add(new Label(showQuestList.get(i)));
+                        add(new Label(showAnswerList.get(i)));
+                    }
+                }
+
+                Button menuButton = new Button("Wróć do menu");
+                menuButton.addClickListener(buttonClickEvent -> {
+                    UI.getCurrent().getPage().setLocation("/api/view-questionnaire");
+                    });
+                add(menuButton);
+
+                for (int i=0; i<questList.size(); i++){
+                    new Label(questList.get(i));
+                    new Label("answer");
+                }
 
                 });
             editButtons.add(showButton);

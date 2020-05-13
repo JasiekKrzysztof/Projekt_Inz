@@ -7,14 +7,14 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 
-@Route("api/user-menu")
+@Route("admin")
 @Theme(value = Lumo.class, variant = Lumo.DARK)
-public class UserMenu extends HorizontalLayout {
+public class AdminMenu extends HorizontalLayout {
 
     Button addNewQuestButton = new Button();
     Button viewQuestButton = new Button();
 
-    public UserMenu() {
+    public AdminMenu() {
 
         setAlignItems(Alignment.CENTER);
         setAddNewQuestButton();
@@ -26,7 +26,7 @@ public class UserMenu extends HorizontalLayout {
         addNewQuestButton.setText("Dodaj nową ankietę");
 
         addNewQuestButton.addClickListener(buttonClickEvent -> {
-           UI.getCurrent().getPage().setLocation("/api/new-questionnaire");
+           UI.getCurrent().getPage().setLocation("/admin/new-questionnaire");
         });
         add(addNewQuestButton);
     }

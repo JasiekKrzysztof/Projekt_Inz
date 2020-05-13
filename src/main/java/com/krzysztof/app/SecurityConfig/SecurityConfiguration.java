@@ -29,10 +29,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //        http.httpBasic()
                 http.authorizeRequests()
                 .antMatchers("/").permitAll()
-                .antMatchers("/h2").hasAnyRole("ADMIN")
+                .antMatchers("/h2", "/admin/**", "/admin").hasAnyRole("ADMIN")
                 .antMatchers("/api/**").hasAnyRole("ADMIN", "USER")
 //                .antMatchers("/api/**").permitAll()
-                .and().formLogin().defaultSuccessUrl("/api/user-menu").permitAll()
+                .and().formLogin().defaultSuccessUrl("/api/view-questionnaire").permitAll()
                 .and().csrf().disable().logout().permitAll()
                 .and().headers().frameOptions().disable();
     }

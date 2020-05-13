@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@Route("api/new-questionnaire")
+@Route("admin/new-questionnaire")
 @Theme(value = Lumo.class, variant = Lumo.DARK)
 public class AddNewQuestionnaire extends VerticalLayout {
 
@@ -120,7 +120,7 @@ public class AddNewQuestionnaire extends VerticalLayout {
         add(goToMenuButton);
 
         goToMenuButton.addClickListener(buttonClickEvent -> {
-            UI.getCurrent().getPage().setLocation("/api/user-menu");
+            UI.getCurrent().getPage().setLocation("/admin");
         });
     }
 
