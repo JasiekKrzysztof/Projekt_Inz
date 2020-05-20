@@ -12,9 +12,6 @@ public class Answer {
     @OneToOne
     private Questionnaire questionnaire;
 
-    @OneToOne
-    private Users users;
-
     String answer1;
     String answer2;
     String answer3;
@@ -26,10 +23,9 @@ public class Answer {
     String answer9;
     String answer10;
 
-    public Answer(Questionnaire questionnaire, Users users,
-                  String answer1, String answer2, String answer3, String answer4, String answer5, String answer6, String answer7, String answer8, String answer9, String answer10) {
+    public Answer(Questionnaire questionnaire, String answer1, String answer2, String answer3, String answer4, String answer5,
+                  String answer6, String answer7, String answer8, String answer9, String answer10) {
         this.questionnaire = questionnaire;
-        this.users = users;
         this.answer1 = answer1;
         this.answer2 = answer2;
         this.answer3 = answer3;
@@ -59,14 +55,6 @@ public class Answer {
 
     public void setQuestionnaire(Questionnaire questionnaire) {
         this.questionnaire = questionnaire;
-    }
-
-    public Users getUsers() {
-        return users;
-    }
-
-    public void setUsers(Users users) {
-        this.users = users;
     }
 
     public String getAnswer1() {

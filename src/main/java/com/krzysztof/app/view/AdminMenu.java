@@ -13,12 +13,14 @@ public class AdminMenu extends HorizontalLayout {
 
     Button addNewQuestButton = new Button();
     Button viewQuestButton = new Button();
+    Button showAnswerButton = new Button();
 
     public AdminMenu() {
 
         setAlignItems(Alignment.CENTER);
         setAddNewQuestButton();
         setViewQuestButton();
+        setShowAnswerButton();
 
     }
 
@@ -38,6 +40,15 @@ public class AdminMenu extends HorizontalLayout {
             UI.getCurrent().getPage().setLocation("/api/view-questionnaire");
         });
         add(viewQuestButton);
+    }
+
+    public void setShowAnswerButton(){
+        showAnswerButton.setText("Przeglądaj odpowiedzi");
+
+        showAnswerButton.addClickListener(buttonClickEvent -> {
+            UI.getCurrent().getPage().setLocation("/admin/questionnairs");
+        });
+        add(showAnswerButton);
     }
 
 }

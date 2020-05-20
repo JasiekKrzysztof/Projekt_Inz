@@ -1,28 +1,29 @@
 package com.krzysztof.app.view;
 
+import com.krzysztof.app.SecurityConfig.Encoder;
 import com.krzysztof.app.SecurityConfig.UserDetailsServiceClass;
 import com.krzysztof.app.model.Answer;
 import com.krzysztof.app.model.Questionnaire;
+import com.krzysztof.app.model.Token;
+import com.krzysztof.app.model.UserQuest;
 import com.krzysztof.app.pattern.Iterator;
-import com.krzysztof.app.repo.AnswerRepo;
-import com.krzysztof.app.repo.QuestionnaireRepo;
-import com.krzysztof.app.repo.UsersRepo;
+import com.krzysztof.app.repo.*;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Route("api/view-questionnaire")
 @Theme(value = Lumo.class, variant = Lumo.DARK)
@@ -31,23 +32,35 @@ public class ViewQuestionnaire extends VerticalLayout {
     QuestionnaireRepo questionnaireRepo;
     AnswerRepo answerRepo;
     UsersRepo usersRepo;
+    TokenRepo tokenRepo;
+    UserQuestRepo userQuestRepo;
     Grid<Questionnaire> questionnaireGrid;
     Grid<Answer> answerGrid;
     UserDetailsServiceClass userDetailsServiceClass;
     List<String> questList = new ArrayList<>();
-
+    Button checkAnswerButton;
+    Label infoTokenLabel;
+    TextField enterTokenTextField;
+    CheckAnswer checkAnswer;
 
     @Autowired
-    public ViewQuestionnaire(QuestionnaireRepo questionnaireRepo, UsersRepo usersRepo, AnswerRepo answerRepo, UserDetailsServiceClass userDetailsServiceClass) {
+    public ViewQuestionnaire(QuestionnaireRepo questionnaireRepo, UsersRepo usersRepo, AnswerRepo answerRepo, TokenRepo tokenRepo,
+                             UserQuestRepo userQuestRepo, UserDetailsServiceClass userDetailsServiceClass, CheckAnswer checkAnswer) {
         this.questionnaireGrid = new Grid<>(Questionnaire.class);
         this.answerGrid = new Grid<>(Answer.class);
         this.questionnaireRepo = questionnaireRepo;
         this.usersRepo = usersRepo;
         this.answerRepo = answerRepo;
+        this.tokenRepo = tokenRepo;
+        this.userQuestRepo = userQuestRepo;
         this.userDetailsServiceClass = userDetailsServiceClass;
+        this.checkAnswer = checkAnswer;
+
         setAlignItems(Alignment.CENTER);
+
+        logoutButton();
         showQuestionnaire();
-        completedSurveys(userDetailsServiceClass.getUserName());
+        showCheckAnswerButton();
     }
 
     public void showQuestionnaire(){
@@ -61,6 +74,9 @@ public class ViewQuestionnaire extends VerticalLayout {
             resolvedButton.addClickListener(e -> {
                 questionnaireGrid.setVisible(false);
                 answerGrid.setVisible(false);
+                checkAnswerButton.setVisible(false);
+                infoTokenLabel.setVisible(false);
+                enterTokenTextField.setVisible(false);
 
                 questList.add(questionnaire.getQuestion1());
                 questList.add(questionnaire.getQuestion2());
@@ -115,16 +131,6 @@ public class ViewQuestionnaire extends VerticalLayout {
             i++;
         }
 
-//        for(int i=0; i<10; i++){
-//            if (questList.get(i) != "") {
-//                add(new Label(questList.get(i)));
-//                add(comboBoxList.get(i));
-//            }
-//        }
-
-
-
-
 
         Button saveButton = new Button("Zapisz opdowiedzi");
         saveButton.addClickListener(buttonClickEvent -> {
@@ -135,84 +141,57 @@ public class ViewQuestionnaire extends VerticalLayout {
             for(int j=0; j<comboBoxList.size(); j++){
                 getAnswer[j] = comboBoxList.get(j).getValue().toString();
             }
-            Answer answer = new Answer(questionnaireRepo.findById(idQuestionnaire).get(), usersRepo.findByLogin(userName), getAnswer[0], getAnswer[1], getAnswer[2], getAnswer[3], getAnswer[4], getAnswer[5], getAnswer[6], getAnswer[7], getAnswer[8], getAnswer[9]);
+            Answer answer = new Answer(questionnaireRepo.findById(idQuestionnaire).get(), getAnswer[0], getAnswer[1], getAnswer[2], getAnswer[3],
+                                        getAnswer[4], getAnswer[5], getAnswer[6], getAnswer[7], getAnswer[8], getAnswer[9]);
             answerRepo.save(answer);
-            UI.getCurrent().getPage().setLocation("/api/view-questionnaire");
+
+            String hashToken = generateTokn(userName);
+            Token token = new Token(answerRepo.findByIdAnswer(answer.getIdAnswer()), hashToken);
+            tokenRepo.save(token);
+
+            UserQuest userQuest = new UserQuest(usersRepo.findByLogin(userName),
+                                                questionnaireRepo.findById(idQuestionnaire).get());
+            userQuestRepo.save(userQuest);
+
+
+            VerticalLayout verticalLayout = new VerticalLayout();
+            Dialog tokenDialog = new Dialog();
+            verticalLayout.add(new Label("Zapisz sobie token dzięki któremu możesz sprawdzić odpowiedzi na ankietę"));
+            verticalLayout.add(new Label(hashToken));
+            Button closeTokenDialogButton = new Button("Wróć do menu");
+            closeTokenDialogButton.addClickListener(buttonClickEvent1 -> {
+                UI.getCurrent().getPage().setLocation("/api/view-questionnaire");
+            });
+            verticalLayout.add(closeTokenDialogButton);
+            tokenDialog.add(verticalLayout);
+            tokenDialog.open();
         });
         add(saveButton);
 
     }
 
-    private void completedSurveys(String userName){
+    private String generateTokn(String userName){
+        String tokenHash = new Date().toString() + userName;
 
-
-
-        answerGrid.setItems(answerRepo.findAllByUsers(usersRepo.findByLogin(userName)));
-//        answerGrid.setColumns(answerRepo.findAllById(questionnaireRepo.findByIdQuestionnaire()));
-
-
-        answerGrid.setColumns("questionnaire");
-
-
-        Collection<Button> editButtons = Collections.newSetFromMap(new WeakHashMap<>());
-
-        answerGrid.addComponentColumn(questionnaire -> {
-//            answerGrid.setColumns(answerRepo.findById(questionnaire.getIdAnswer().longValue()).get().getQuestionnaire().getName());
-            Button showButton = new Button("Sprawdź odpowiedzi");
-            showButton.addClickListener(e -> {
-                answerGrid.setVisible(false);
-                questionnaireGrid.setVisible(false);
-
-                List<String> showQuestList = new ArrayList<>();
-
-                showQuestList.add(questionnaire.getQuestionnaire().getQuestion1());
-                showQuestList.add(questionnaire.getQuestionnaire().getQuestion2());
-                showQuestList.add(questionnaire.getQuestionnaire().getQuestion3());
-                showQuestList.add(questionnaire.getQuestionnaire().getQuestion4());
-                showQuestList.add(questionnaire.getQuestionnaire().getQuestion5());
-                showQuestList.add(questionnaire.getQuestionnaire().getQuestion6());
-                showQuestList.add(questionnaire.getQuestionnaire().getQuestion7());
-                showQuestList.add(questionnaire.getQuestionnaire().getQuestion8());
-                showQuestList.add(questionnaire.getQuestionnaire().getQuestion9());
-                showQuestList.add(questionnaire.getQuestionnaire().getQuestion10());
-
-                List<String> showAnswerList = new ArrayList<>();
-
-                showAnswerList.add(questionnaire.getAnswer1());
-                showAnswerList.add(questionnaire.getAnswer2());
-                showAnswerList.add(questionnaire.getAnswer3());
-                showAnswerList.add(questionnaire.getAnswer4());
-                showAnswerList.add(questionnaire.getAnswer5());
-                showAnswerList.add(questionnaire.getAnswer6());
-                showAnswerList.add(questionnaire.getAnswer7());
-                showAnswerList.add(questionnaire.getAnswer8());
-                showAnswerList.add(questionnaire.getAnswer9());
-                showAnswerList.add(questionnaire.getAnswer10());
-
-                for (int i=0; i<showQuestList.size(); i++){
-                    if (showQuestList.get(i) != "") {
-                        add(new Label(showQuestList.get(i)));
-                        add(new Label(showAnswerList.get(i)));
-                    }
-                }
-
-                Button menuButton = new Button("Wróć do menu");
-                menuButton.addClickListener(buttonClickEvent -> {
-                    UI.getCurrent().getPage().setLocation("/api/view-questionnaire");
-                    });
-                add(menuButton);
-
-                for (int i=0; i<questList.size(); i++){
-                    new Label(questList.get(i));
-                    new Label("answer");
-                }
-
-                });
-            editButtons.add(showButton);
-            return showButton;
-        });
-
-        add(answerGrid);
+        return Encoder.getInstance().encode(tokenHash);
     }
 
+    private void showCheckAnswerButton(){
+        checkAnswerButton = new Button("Sprawdź odpowiedzi");
+        infoTokenLabel = new Label("Podaj token ankiety, której chcesz zobaczyć swoje odpowiedzi");
+        enterTokenTextField = new TextField("Token");
+        checkAnswerButton.addClickListener(buttonClickEvent -> {
+            checkAnswer.showAnswers(enterTokenTextField.getValue());
+        });
+        add(infoTokenLabel, enterTokenTextField, checkAnswerButton);
+    }
+
+    public void logoutButton(){
+        Button logoutButton = new Button("Wyloguj się");
+        logoutButton.addClickListener(buttonClickEvent -> {
+            UI.getCurrent().getPage().setLocation("http://localhost:8080/logout");
+            UI.getCurrent().getPage().setLocation("http://localhost:8080");
+        });
+        add(logoutButton);
+    }
 }

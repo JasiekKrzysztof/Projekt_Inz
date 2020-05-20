@@ -22,8 +22,6 @@ public class UserDetailsServiceClass implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userLogin) throws UsernameNotFoundException {
-
-        //Users user = usersRepo.findByLogin(userLogin);
         userName = userLogin;
         return usersRepo.findByLogin(userLogin);
     }
