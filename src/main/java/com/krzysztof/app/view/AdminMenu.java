@@ -31,10 +31,22 @@ public class AdminMenu extends VerticalLayout {
     public AdminMenu() {
 
         setAlignItems(Alignment.CENTER);
+        logoutButton();
         setAddNewQuestButton();
-        setViewQuestButton();
         setShowAnswerButton();
 
+    }
+
+    /**
+     * metoda pozwalająca na wyglowanie się
+     */
+    public void logoutButton(){
+        Button logoutButton = new Button("Wyloguj się");
+        logoutButton.addClickListener(buttonClickEvent -> {
+            UI.getCurrent().getPage().setLocation("http://localhost:8080/logout");
+            UI.getCurrent().getPage().setLocation("http://localhost:8080");
+        });
+        add(logoutButton);
     }
 
     /**
@@ -49,23 +61,12 @@ public class AdminMenu extends VerticalLayout {
         add(addNewQuestButton);
     }
 
-    /**
-     * metoda przenosząca na stronę umożliwiającą wyswietlanie poszczególnych ankiet
-     */
-    public void setViewQuestButton(){
-        viewQuestButton.setText("Przeglądaj ankiety");
-
-        viewQuestButton.addClickListener(buttonClickEvent -> {
-            UI.getCurrent().getPage().setLocation("/api/view-questionnaire");
-        });
-        add(viewQuestButton);
-    }
 
     /**
      * metoda przenosząca na stronę umożliwiającą wyświetlanie statystyk o danej ankiecie
      */
     public void setShowAnswerButton(){
-        showAnswerButton.setText("Przeglądaj odpowiedzi");
+        showAnswerButton.setText("Przeglądaj statystykę");
 
         showAnswerButton.addClickListener(buttonClickEvent -> {
             UI.getCurrent().getPage().setLocation("/admin/questionnairs");

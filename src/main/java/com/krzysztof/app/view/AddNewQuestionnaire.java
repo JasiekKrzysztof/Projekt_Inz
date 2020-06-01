@@ -98,7 +98,6 @@ public class AddNewQuestionnaire extends VerticalLayout {
             add(textList.get(i));
         }
         setEndButton();
-        setGoToMenuButton();
     }
 
     /**
@@ -127,17 +126,11 @@ public class AddNewQuestionnaire extends VerticalLayout {
                     .question10(questionTextField10.getValue())
                     .build();
             questionnaireRepo.save(questionnaire);
-        });
-    }
-
-    /**
-     * metoda przycisku przenoszącego do menu
-     */
-    private void setGoToMenuButton(){
-        add(goToMenuButton);
-
-        goToMenuButton.addClickListener(buttonClickEvent -> {
-            UI.getCurrent().getPage().setLocation("/admin");
+            Button backToMenu = new Button("Wróć do menu");
+            backToMenu.addClickListener(buttonClickEvent1 -> {
+                UI.getCurrent().getPage().setLocation("http://localhost:8080/admin");
+            });
+            add(backToMenu);
         });
     }
 

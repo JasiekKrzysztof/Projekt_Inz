@@ -7,6 +7,7 @@ import com.krzysztof.app.repo.AnswerRepo;
 import com.krzysztof.app.repo.QuestionnaireRepo;
 import com.krzysztof.app.repo.UserQuestRepo;
 import com.krzysztof.app.repo.UsersRepo;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -39,6 +40,7 @@ public class PercentOfGivenQuestionnaire extends VerticalLayout {
      * Widok pytań oraz przycisków przenoszących do poszczególnych ankiet
      */
     Grid<Questionnaire> statisticsGrid;
+    Button goBack = new Button("Powrót do menu");
 
     /**
      * Konstruktor z wykorzystaniem Dependency Injection
@@ -75,7 +77,7 @@ public class PercentOfGivenQuestionnaire extends VerticalLayout {
 
                 Integer allUserInDatabase = usersRepo.findAllByRole("ROLE_USER").size();
                 Integer numberOffUserAnswerQuest = userQuestRepo.findAllByQuestionnaireIdQuestionnaire(questionnaire.getIdQuestionnaire()).size();
-                verticalLayout.add(new Label("Wypełniło: " + numberOffUserAnswerQuest + "/" + allUserInDatabase + "osób"));
+                verticalLayout.add(new Label("Wypełniło: " + numberOffUserAnswerQuest + "/" + allUserInDatabase + " osób"));
                 String nameUser;
                 for (int i=0; i<numberOffUserAnswerQuest; i++) {
                     nameUser = userQuestRepo.findAllByQuestionnaireIdQuestionnaire(questionnaire.getIdQuestionnaire()).get(i).getUsers().getName();
@@ -88,6 +90,10 @@ public class PercentOfGivenQuestionnaire extends VerticalLayout {
             return resolvedButton;
         });
         add(statisticsGrid);
+        goBack.addClickListener(buttonClickEvent -> {
+            UI.getCurrent().getPage().setLocation("http://localhost:8080/admin");
+        });
+        add(goBack);
     }
 
 }

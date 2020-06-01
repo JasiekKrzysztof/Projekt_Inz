@@ -8,13 +8,13 @@ import com.krzysztof.app.model.Token;
 import com.krzysztof.app.model.UserQuest;
 import com.krzysztof.app.pattern.Iterator;
 import com.krzysztof.app.repo.*;
+import com.krzysztof.app.sender.MailService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
@@ -22,6 +22,7 @@ import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.mail.MessagingException;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -83,6 +84,10 @@ public class ViewQuestionnaire extends VerticalLayout {
      * Odwołanie do klasy pozwalającej wyświetlić odpowiedzi na daną ankietę
      */
     CheckAnswer checkAnswer;
+    /**
+     * utowrzenie obiektu klasy wysyłającej e-maila
+     */
+    MailService mailService;
 
     /**
      * Konstruktor z wykorzystaniem Dependency Injection
@@ -93,10 +98,12 @@ public class ViewQuestionnaire extends VerticalLayout {
      * @param userQuestRepo wstrzyknięcie zależności do interfejsu userQuestRepo
      * @param userDetailsServiceClass wstrzyknięcie zależności do interfejsu userDetailsServiceClass
      * @param checkAnswer stworzenie obiektu z klasy CheckAnswer
+     * @param mailService stworzenie obiektu z klasy MailService
      */
     @Autowired
     public ViewQuestionnaire(QuestionnaireRepo questionnaireRepo, UsersRepo usersRepo, AnswerRepo answerRepo, TokenRepo tokenRepo,
-                             UserQuestRepo userQuestRepo, UserDetailsServiceClass userDetailsServiceClass, CheckAnswer checkAnswer) {
+                             UserQuestRepo userQuestRepo, UserDetailsServiceClass userDetailsServiceClass, CheckAnswer checkAnswer,
+                             MailService mailService) {
         this.questionnaireGrid = new Grid<>(Questionnaire.class);
         this.answerGrid = new Grid<>(Answer.class);
         this.questionnaireRepo = questionnaireRepo;
@@ -106,9 +113,11 @@ public class ViewQuestionnaire extends VerticalLayout {
         this.userQuestRepo = userQuestRepo;
         this.userDetailsServiceClass = userDetailsServiceClass;
         this.checkAnswer = checkAnswer;
+        this.mailService = mailService;
 
         setAlignItems(Alignment.CENTER);
 
+        adminPage();
         logoutButton();
         showQuestionnaire();
         showCheckAnswerButton();
@@ -196,7 +205,6 @@ public class ViewQuestionnaire extends VerticalLayout {
          */
         Button saveButton = new Button("Zapisz opdowiedzi");
         saveButton.addClickListener(buttonClickEvent -> {
-            Notification.show("Odpowiedzi zostały zapisane").setPosition(Notification.Position.MIDDLE);
             String []getAnswer = {"0","0","0","0","0","0","0","0","0","0"};
 
             for(int j=0; j<comboBoxList.size(); j++){
@@ -215,13 +223,36 @@ public class ViewQuestionnaire extends VerticalLayout {
             userQuestRepo.save(userQuest);
 
             /**
+             * zmienna przechoiwuje teks wiadomości e-mail
+             */
+            String textToSendMail = "Twót token do sprawdzenia odpowiedzi: " + hashToken + "\n\n Twoje udzielone odpowiedzi:";
+            for (int x = 0; x < getAnswer.length; x++){
+                if (getAnswer[x] != "0"){
+                    textToSendMail = textToSendMail + "\n\nPytanie" + (x+1) + ":\t\t\t" + questList.get(x) + "\nTwoja odpowiedź: \t" + getAnswer[x];
+                }
+            }
+
+
+            try {
+                /**
+                 * wyowłanie metody wysyłającej e-mail z informacjami do użytkownika
+                 */
+                mailService.sendMail(usersRepo.findByLogin(userName).getEmail(),
+                        "Twój token", textToSendMail, true);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+
+
+            /**
              * Wyświetlanie użytkownikowi informacji zwrotnej po zapisaniu danych z ankiety,
              * informacja ta zawiera token dzięki któremu bedzie mógł sprawdzić swoje odpowiedzi
              */
             VerticalLayout verticalLayout = new VerticalLayout();
             Dialog tokenDialog = new Dialog();
-            verticalLayout.add(new Label("Zapisz sobie token dzięki któremu możesz sprawdzić odpowiedzi na ankietę"));
-            verticalLayout.add(new Label(hashToken));
+            verticalLayout.add(new Label("Token został wysłany na Twój adres e-mail, dzięki tokenowi możesz sprawdzić swoje odpowiedz" +
+                    "oraz sprawdzić czy nie zostały one zmienione"));
+            verticalLayout.add(new Label("Twoje odpowiedzi zostały zapisane"));
             /**
              * Przycisk powrotu do menu
              */
@@ -243,6 +274,7 @@ public class ViewQuestionnaire extends VerticalLayout {
      * @return metoda zwraca token przypisany do danej ankiety oraz użytkownika
      */
     private String generateTokn(String userName){
+
         String tokenHash = new Date().toString() + userName;
 
         return Encoder.getInstance().encode(tokenHash);
@@ -270,5 +302,15 @@ public class ViewQuestionnaire extends VerticalLayout {
             UI.getCurrent().getPage().setLocation("http://localhost:8080");
         });
         add(logoutButton);
+    }
+
+    /**
+     * metoda sprawdzająca czt użytkownik ma role admina, jeżeli tak to przenosi go na odpowiednią stronę dla admina
+     */
+    public void adminPage(){
+        String userRole = usersRepo.findByLogin(userDetailsServiceClass.getUserName()).getRole();
+        if (userRole.equals("ROLE_ADMIN")){
+            UI.getCurrent().getPage().setLocation("http://localhost:8080/admin");
+        }
     }
 }

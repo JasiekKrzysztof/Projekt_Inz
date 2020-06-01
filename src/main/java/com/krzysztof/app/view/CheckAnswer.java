@@ -69,6 +69,7 @@ public class CheckAnswer {
         Dialog questDialog = new Dialog();
         VerticalLayout verticalLayout = new VerticalLayout();
 
+
         verticalLayout.add(questName);
         for (int i = 0; i<showQuestList.size(); i++){
             if (showQuestList.get(i) != ""){
@@ -79,4 +80,5 @@ public class CheckAnswer {
         questDialog.add(verticalLayout);
         questDialog.open();
     }
+
 }
