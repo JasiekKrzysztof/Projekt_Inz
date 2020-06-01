@@ -20,13 +20,24 @@ import java.util.List;
 @Component
 public class CheckAnswer {
 
+    /**
+     * repozytorium tokenów
+     */
     TokenRepo tokenRepo;
 
+    /**
+     * Konstruktor z wykorzystaniem Dependency Injection
+     * @param tokenRepo wstrzyknięcie zależności do interfejsu tokenRepo
+     */
     @Autowired
     public CheckAnswer(TokenRepo tokenRepo) {
         this.tokenRepo = tokenRepo;
     }
 
+    /**
+     * metoda dzięki której możemy wyszukać swoje odpowiedzi na daną ankietę oraz wyświetlić wraz z pytaniami
+     * @param token przyjmuje parametr służący do wyszukania potrzebnych odpowiedzi
+     */
     public void showAnswers(String token){
         String name = tokenRepo.findByToken(token).getAnswer().getQuestionnaire().getName();
         Label questName = new Label("Tytuł ankiety: " + name);
@@ -67,7 +78,5 @@ public class CheckAnswer {
         }
         questDialog.add(verticalLayout);
         questDialog.open();
-
-
     }
 }

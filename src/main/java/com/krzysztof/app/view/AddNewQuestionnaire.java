@@ -23,11 +23,19 @@ import java.util.List;
 @Theme(value = Lumo.class, variant = Lumo.DARK)
 public class AddNewQuestionnaire extends VerticalLayout {
 
+    /**
+     * repozytorium pytań
+     */
     @Autowired
     QuestionnaireRepo questionnaireRepo;
 
+    /**
+     * pole umożliwiające wybór liczby pytań
+     */
     private NumberField numberField = new NumberField("Wybierz liczbę pytań w ankiecie i przejdź dalej");
-
+    /**
+     * pole do wpisania tytułu ankiety
+     */
     TextField titleTextField = new TextField("Podaj tytuł ankiety:");
 
     private Button nextButton = new Button("Dalej");
@@ -46,6 +54,9 @@ public class AddNewQuestionnaire extends VerticalLayout {
     private TextField questionTextField10 = new TextField("Pytanie 10");
     private  List<TextField> textList = new ArrayList<TextField>();
 
+    /**
+     * konstruktor klasy wywołujący kolejne metody
+     */
     public AddNewQuestionnaire() {
         setAlignItems(Alignment.CENTER);
         add(titleTextField, numberField, nextButton);
@@ -58,6 +69,9 @@ public class AddNewQuestionnaire extends VerticalLayout {
         });
     }
 
+    /**
+     * metoda służąca do ustawienia liczby pytań
+     */
     private void setNumberField(){
         numberField.setValue(1d);
         numberField.setHasControls(true);
@@ -65,6 +79,9 @@ public class AddNewQuestionnaire extends VerticalLayout {
         numberField.setMax(10);
     }
 
+    /**
+     * metoda służąca do tworzenia nowej Ankiety, dodawanie kolejnych pytań
+     */
     private void createQuestionnaire(){
         textList.add(questionTextField1);
         textList.add(questionTextField2);
@@ -80,12 +97,13 @@ public class AddNewQuestionnaire extends VerticalLayout {
         for (int i=0; i<=numberField.getValue()-1; i++){
             add(textList.get(i));
         }
-         setEndButton();
+        setEndButton();
         setGoToMenuButton();
-
     }
 
-
+    /**
+     * metoda służąca do zapisania pytań do ankiety w bazie danych
+     */
     private void setEndButton(){
         add(endButton);
 
@@ -94,10 +112,6 @@ public class AddNewQuestionnaire extends VerticalLayout {
 
             Notification.show("Ankieta została dodana pomyślnie!").setPosition(Notification.Position.MIDDLE);
 
-
-//            Questionnaire questionnaire = new Questionnaire(titleTextField.getValue(), date, questionTextField1.getValue(), questionTextField2.getValue(),
-//                    questionTextField3.getValue(), questionTextField4.getValue(), questionTextField5.getValue(), questionTextField6.getValue(), questionTextField7.getValue(),
-//                    questionTextField8.getValue(), questionTextField9.getValue(), questionTextField10.getValue());
             Questionnaire questionnaire = Questionnaire.builder()
                     .name(titleTextField.getValue())
                     .date(date)
@@ -116,6 +130,9 @@ public class AddNewQuestionnaire extends VerticalLayout {
         });
     }
 
+    /**
+     * metoda przycisku przenoszącego do menu
+     */
     private void setGoToMenuButton(){
         add(goToMenuButton);
 

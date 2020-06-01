@@ -9,12 +9,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Interface odpowiedzialny za zarządzanie rekordami w tabeli
+ */
 @Repository
 public interface AnswerRepo extends JpaRepository<Answer, Long> {
-
-//    List<Answer> findAllByUsers(Users users);
-//
-//    Answer findByQuestionnaire_IdQuestionnaire (Long id);
 
     Answer findByIdAnswer(Long id);
 }

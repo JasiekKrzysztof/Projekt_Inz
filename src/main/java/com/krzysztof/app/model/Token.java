@@ -5,6 +5,9 @@ import javax.persistence.*;
 @Entity
 public class Token {
 
+    /**
+     * id automatycznie inkrementujące
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -14,9 +17,17 @@ public class Token {
 
     String token;
 
+    /**
+     * konstruktor bezparametrowy
+     */
     public Token() {
     }
 
+    /**
+     * konstruktor
+     * @param answer przyjmuje odniesienie do tabeli odpowiedzi
+     * @param token przyjmuje token
+     */
     public Token(Answer answer, String token) {
         this.answer = answer;
         this.token = token;

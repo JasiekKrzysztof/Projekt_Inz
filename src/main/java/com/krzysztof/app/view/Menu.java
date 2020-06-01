@@ -22,29 +22,52 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Theme(value = Lumo.class, variant = Lumo.DARK)
 public class Menu extends VerticalLayout {
 
-
+    /**
+     * Repozytorium użytkowników
+     */
     @Autowired
     UsersRepo usersRepo;
 
+    /**
+     * pole do wpisania imienia
+     */
     TextField textFieldName = new TextField();
+    /**
+     * pole do wpisania loginu
+     */
     TextField textFieldLogin = new TextField();
+    /**
+     * pole do wpisaniu e-maila
+     */
     TextField textFieldEmail = new TextField();
 
+    /**
+     * wyświetla informacje na temat rejestracji
+     */
     Label labelHelloRegistration = new Label();
 
+    /**
+     * pole do wpisania hasła
+     */
     PasswordField passwordField = new PasswordField();
 
+    /**
+     * przycisk do rejestracji, zapisuje dane w bazie danych
+     */
     Button buttonRegistration = new Button();
+    /**
+     * przycisk przekierowywujący użytkownika na stronę logowania
+     */
     Button buttonLogin = new Button();
 
-//    @Bean
-//    public BCryptPasswordEncoder bCryptPasswordEncoder(){
-//        return new BCryptPasswordEncoder();
-//    };
+    /**
+     * Klasa hashująca hasła nowo utworzonych użytkowników
+     */
     BCryptPasswordEncoder encoder = Encoder.getInstance();
 
-   // BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
+    /**
+     * Konstruktor klasy
+     */
     public Menu() {
         setAlignItems(Alignment.CENTER);
         loginButton();
@@ -52,15 +75,17 @@ public class Menu extends VerticalLayout {
 
     }
 
+    /**
+     * Metoda służąca do zapisywania danych użytkownika w bazie danych podczas rejestracji
+     */
     public void addUsers(){
         Users user = new Users(textFieldName.getValue(), textFieldEmail.getValue(), textFieldLogin.getValue(), encoder.encode(passwordField.getValue()), "ROLE_USER");
-        //user.setPassword(encoder.encode(user.getPassword()));
         usersRepo.save(user);
-
-
-//        System.out.println(usersRepo.findByLogin(user.getLogin()));
     }
 
+    /**
+     * Metoda przekierowywująca na stronę logowania
+     */
     public void loginButton(){
         buttonLogin.setText("Zaloguj się");
         buttonLogin.addClickListener(buttonClickEvent -> {
@@ -69,6 +94,9 @@ public class Menu extends VerticalLayout {
         add(buttonLogin);
     }
 
+    /**
+     * metoda służąca do pobierania danych niezbędnych do rejestracji
+     */
     public void registrationUser(){
         labelHelloRegistration.setText("Zaloguj się lub jeśli nie masz konta, stwórz je");
         textFieldName.setPlaceholder("Imię");

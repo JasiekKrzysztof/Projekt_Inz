@@ -1,0 +1,6 @@
+com.krzysztof.app
+com.krzysztof.app.SecurityConfig
+com.krzysztof.app.model
+com.krzysztof.app.pattern
+com.krzysztof.app.repo
+com.krzysztof.app.view

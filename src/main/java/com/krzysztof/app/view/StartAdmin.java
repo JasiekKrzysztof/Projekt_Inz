@@ -8,6 +8,9 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+/**
+ * Służy do utworzenia admina podczas resetowania bazy danych
+ */
 @Component
 public class StartAdmin {
 

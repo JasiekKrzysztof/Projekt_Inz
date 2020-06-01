@@ -5,10 +5,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 public class Questionnaire {
 
+    /**
+     * id automatycznie inkrementujące
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long idQuestionnaire;
@@ -27,6 +31,9 @@ public class Questionnaire {
     String question10;
 
 
+    /**
+     * konstruktor bezparametrowy
+     */
     public Questionnaire() {
     }
 
@@ -135,12 +142,17 @@ public class Questionnaire {
         this.question10 = question10;
     }
 
-
-    // Builder - Fabryka  https://devcave.pl/effective-java/wzorzec-projektowy-builder
+    /**
+     * metoda tworząca nowy obiekt buildera
+     * @return zwraca utworzony nowy obiekt
+     */
     public static Builder builder() {
         return new Builder();
     }
 
+    /**
+     * statyczna, finalna klasa buidera, potrzebna do zapisania nowych obiektow w tabeli
+     */
     public static final class Builder {
         String name;
         Date date;
@@ -206,8 +218,10 @@ public class Questionnaire {
             return this;
         }
 
-
-
+        /**
+         * metoda służy do budowania nowej ankiety
+         * @return zwraca pytania
+         */
         public Questionnaire build() {
 
             Questionnaire questionnaire = new Questionnaire();
@@ -230,8 +244,46 @@ public class Questionnaire {
 
     }
 
+    /**
+     * przeciążenie metody toString()
+     * @return zwraca nazwe ankiety
+     */
     @Override
     public String toString() {
         return this.name;
+    }
+
+    /**
+     * przeciażenie metody equals()
+     * @param o przyjmuje obiekt
+     * @return zwraca intiger pozwalający określić różnicę w obiektach
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Questionnaire that = (Questionnaire) o;
+        return Objects.equals(idQuestionnaire, that.idQuestionnaire) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(date, that.date) &&
+                Objects.equals(question1, that.question1) &&
+                Objects.equals(question2, that.question2) &&
+                Objects.equals(question3, that.question3) &&
+                Objects.equals(question4, that.question4) &&
+                Objects.equals(question5, that.question5) &&
+                Objects.equals(question6, that.question6) &&
+                Objects.equals(question7, that.question7) &&
+                Objects.equals(question8, that.question8) &&
+                Objects.equals(question9, that.question9) &&
+                Objects.equals(question10, that.question10);
+    }
+
+    /**
+     * przeciążenie metody hashCode()
+     * @return zwraca hash
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(idQuestionnaire, name, date, question1, question2, question3, question4, question5, question6, question7, question8, question9, question10);
     }
 }

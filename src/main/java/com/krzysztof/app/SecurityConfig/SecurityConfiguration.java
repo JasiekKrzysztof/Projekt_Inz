@@ -16,27 +16,29 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-//    private static final String LOGIN_PROCESSING_URL = "/login";
-//    private static final String LOGIN_FAILURE_URL = "/login";
-//    private static final String LOGIN_URL = "/login";
-//    private static final String LOGOUT_SUCCESS_URL = "/login";
-
     @Autowired
     UserDetailsServiceClass userDetailsServiceClass;
 
+    /**
+     * przeciążenie metody configure() z parametrami
+     * @param http zapytanie http
+     * @throws Exception przechwytuje wyjątek
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http.httpBasic()
                 http.authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers("/h2", "/admin/**", "/admin").hasAnyRole("ADMIN")
                 .antMatchers("/api/**").hasAnyRole("ADMIN", "USER")
-//                .antMatchers("/api/**").permitAll()
                 .and().formLogin().defaultSuccessUrl("/api/view-questionnaire").permitAll()
                 .and().csrf().disable().logout().permitAll()
                 .and().headers().frameOptions().disable();
     }
 
+    /**
+     * przeciążenie metody configure()
+     * @param web przekazuje parametr WebSecurity
+     */
     @Override
     public void configure(WebSecurity web) {
         web.ignoring().antMatchers(
@@ -72,6 +74,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
 
+    /**
+     * przeciążenie metody configure()
+     * @param auth menager autentykacji
+     * @throws Exception przsechwytuje wyjątek
+     */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsServiceClass);

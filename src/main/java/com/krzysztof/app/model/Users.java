@@ -17,6 +17,9 @@ import java.util.Collections;
 @Entity
 public class Users implements UserDetails {
 
+    /**
+     * id automatycznie inkrementujące
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long idUsers;
@@ -27,9 +30,20 @@ public class Users implements UserDetails {
     String email;
     String role;
 
+    /**
+     * konstruktor bezparametrowy
+     */
     public Users() {
     }
 
+    /**
+     * konstruktor
+     * @param name przyjmuje imie
+     * @param email przyjmuje e-mail
+     * @param login przyjmuje login
+     * @param password przyjmuje hasło
+     * @param role przyjmuje role użytkownika
+     */
     public Users(String name, String email, String login, String password, String role) {
         this.name = name;
         this.email = email;

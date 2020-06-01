@@ -2,13 +2,22 @@ package com.krzysztof.app.model;
 
 import javax.persistence.*;
 
+/**
+ * tabela odpowiedzi
+ */
 @Entity
 public class Answer {
 
+    /**
+     * id automatycznie inkrementujące
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long idAnswer;
 
+    /**
+     * odniesienie sie do tabeli ankiet
+     */
     @OneToOne
     private Questionnaire questionnaire;
 
@@ -23,6 +32,20 @@ public class Answer {
     String answer9;
     String answer10;
 
+    /**
+     * konstruktor
+     * @param questionnaire przyjmuje odniesienie dod tabeli ankiet
+     * @param answer1 przyjmuje pytanie nr 1
+     * @param answer2 przyjmuje pytanie nr 2
+     * @param answer3 przyjmuje pytanie nr 3
+     * @param answer4 przyjmuje pytanie nr 4
+     * @param answer5 przyjmuje pytanie nr 5
+     * @param answer6 przyjmuje pytanie nr 6
+     * @param answer7 przyjmuje pytanie nr 7
+     * @param answer8 przyjmuje pytanie nr 8
+     * @param answer9 przyjmuje pytanie nr 9
+     * @param answer10 przyjmuje pytanie nr 10
+     */
     public Answer(Questionnaire questionnaire, String answer1, String answer2, String answer3, String answer4, String answer5,
                   String answer6, String answer7, String answer8, String answer9, String answer10) {
         this.questionnaire = questionnaire;
@@ -38,6 +61,9 @@ public class Answer {
         this.answer10 = answer10;
     }
 
+    /**
+     * konstruktor bezparametrowy
+     */
     public Answer() {
     }
 

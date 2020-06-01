@@ -24,25 +24,76 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Route("api/view-questionnaire")
 @Theme(value = Lumo.class, variant = Lumo.DARK)
 public class ViewQuestionnaire extends VerticalLayout {
 
+    /**
+     * Repozytorium pytań
+     */
     QuestionnaireRepo questionnaireRepo;
+    /**
+     * Repozytorium odpowiedzi
+     */
     AnswerRepo answerRepo;
+    /**
+     * Repozytorium użytkowników
+     */
     UsersRepo usersRepo;
+    /**
+     * Repozytorium tokenów
+     */
     TokenRepo tokenRepo;
+    /**
+     * Repozytorium użytkowników którzy rozwiązali ankiety, przechowuje ich tokeny
+     */
     UserQuestRepo userQuestRepo;
+    /**
+     * Widok pytań
+     */
     Grid<Questionnaire> questionnaireGrid;
+    /**
+     * Widok odpowiedzi
+     */
     Grid<Answer> answerGrid;
+    /**
+     *  Klasa wyszukująca urzytkowników
+     */
     UserDetailsServiceClass userDetailsServiceClass;
+    /**
+     *  Lista pytań dla danej ankiety
+     */
     List<String> questList = new ArrayList<>();
+    /**
+     * Przycisk dający możliwość sprawdzenia odpowiedzi na daną ankietę
+     */
     Button checkAnswerButton;
+    /**
+     * Wyświetla informacje co daje token i jak go użyć
+     */
     Label infoTokenLabel;
+    /**
+     * Pole pozwalające wpisać token do sprawdzenia odpowiedzi na daną ankietę
+     */
     TextField enterTokenTextField;
+    /**
+     * Odwołanie do klasy pozwalającej wyświetlić odpowiedzi na daną ankietę
+     */
     CheckAnswer checkAnswer;
 
+    /**
+     * Konstruktor z wykorzystaniem Dependency Injection
+     * @param questionnaireRepo wstrzyknięcie zależności do interfejsu questionnaireRepo
+     * @param usersRepo wstrzyknięcie zależności do interfejsu usersRepo
+     * @param answerRepo wstrzyknięcie zależności do interfejsu answerRepo
+     * @param tokenRepo wstrzyknięcie zależności do interfejsu tokenRepo
+     * @param userQuestRepo wstrzyknięcie zależności do interfejsu userQuestRepo
+     * @param userDetailsServiceClass wstrzyknięcie zależności do interfejsu userDetailsServiceClass
+     * @param checkAnswer stworzenie obiektu z klasy CheckAnswer
+     */
     @Autowired
     public ViewQuestionnaire(QuestionnaireRepo questionnaireRepo, UsersRepo usersRepo, AnswerRepo answerRepo, TokenRepo tokenRepo,
                              UserQuestRepo userQuestRepo, UserDetailsServiceClass userDetailsServiceClass, CheckAnswer checkAnswer) {
@@ -63,8 +114,16 @@ public class ViewQuestionnaire extends VerticalLayout {
         showCheckAnswerButton();
     }
 
+    /**
+     * Metoda służąca do wyświetlania użytkownikowi ankiet, dzięki wykorzystaniu "Stream" użytkownik widzi tylko niewypełnione ankiety
+     */
     public void showQuestionnaire(){
-        questionnaireGrid.setItems(questionnaireRepo.findAll());
+        List<UserQuest> allByUsers = userQuestRepo.findAllByUsers(usersRepo.findByLogin(userDetailsServiceClass.getUserName()));
+        Stream<Questionnaire> questionnaireStream = allByUsers.stream().map(userQuest -> userQuest.getQuestionnaire());
+        List<Questionnaire> collect = questionnaireStream.collect(Collectors.toList());
+        List<Questionnaire> all = questionnaireRepo.findAll();
+        all.removeAll(collect);
+        questionnaireGrid.setItems(all);
         questionnaireGrid.setColumns("name", "date");
 
         Collection<Button> editButtons = Collections.newSetFromMap(new WeakHashMap<>());
@@ -89,13 +148,9 @@ public class ViewQuestionnaire extends VerticalLayout {
                 questList.add(questionnaire.getQuestion9());
                 questList.add(questionnaire.getQuestion10());
 
-//                System.out.println(userDetailsServiceClass.getUserName());
-
                 resolveQuest(questionnaire.getIdQuestionnaire(), userDetailsServiceClass.getUserName());
-
-
-
             });
+//            if (!all.contains(questionnaire))
             editButtons.add(resolvedButton);
             return resolvedButton;
         });
@@ -103,6 +158,11 @@ public class ViewQuestionnaire extends VerticalLayout {
         add(questionnaireGrid);
     }
 
+    /**
+     * Metoda służąca do wypełniania ankiet przez użytkownika oraz zapisywania ich do bazy danych
+     * @param idQuestionnaire parametr przekazuje id użytkownika
+     * @param userName parametr przekazuje nazwę użytkownika
+     */
     public void resolveQuest(Long idQuestionnaire, String userName){
         List<String> answerList = new ArrayList<>(5);
         answerList.add("1");
@@ -131,10 +191,11 @@ public class ViewQuestionnaire extends VerticalLayout {
             i++;
         }
 
-
+        /**
+         * Przycisk do zapisywania odpowiedzi w bazie danych
+         */
         Button saveButton = new Button("Zapisz opdowiedzi");
         saveButton.addClickListener(buttonClickEvent -> {
-//            add(new Label(setAnswer1.getValue().toString()));
             Notification.show("Odpowiedzi zostały zapisane").setPosition(Notification.Position.MIDDLE);
             String []getAnswer = {"0","0","0","0","0","0","0","0","0","0"};
 
@@ -153,11 +214,17 @@ public class ViewQuestionnaire extends VerticalLayout {
                                                 questionnaireRepo.findById(idQuestionnaire).get());
             userQuestRepo.save(userQuest);
 
-
+            /**
+             * Wyświetlanie użytkownikowi informacji zwrotnej po zapisaniu danych z ankiety,
+             * informacja ta zawiera token dzięki któremu bedzie mógł sprawdzić swoje odpowiedzi
+             */
             VerticalLayout verticalLayout = new VerticalLayout();
             Dialog tokenDialog = new Dialog();
             verticalLayout.add(new Label("Zapisz sobie token dzięki któremu możesz sprawdzić odpowiedzi na ankietę"));
             verticalLayout.add(new Label(hashToken));
+            /**
+             * Przycisk powrotu do menu
+             */
             Button closeTokenDialogButton = new Button("Wróć do menu");
             closeTokenDialogButton.addClickListener(buttonClickEvent1 -> {
                 UI.getCurrent().getPage().setLocation("/api/view-questionnaire");
@@ -170,12 +237,19 @@ public class ViewQuestionnaire extends VerticalLayout {
 
     }
 
+    /**
+     * Metoda generujaca niepowtarzalny token
+     * @param userName przekazanie nazwy użytkownika, do stworzenia niepowtarzalnego tokena
+     * @return metoda zwraca token przypisany do danej ankiety oraz użytkownika
+     */
     private String generateTokn(String userName){
         String tokenHash = new Date().toString() + userName;
 
         return Encoder.getInstance().encode(tokenHash);
     }
-
+    /**
+     * Metoda pozwalająca na sprawdzenie odpowiedzi na daną ankietę dzięki podaniu tokena, wygenerowanego podczas zapisywania odpowiedzi
+     */
     private void showCheckAnswerButton(){
         checkAnswerButton = new Button("Sprawdź odpowiedzi");
         infoTokenLabel = new Label("Podaj token ankiety, której chcesz zobaczyć swoje odpowiedzi");
@@ -186,6 +260,9 @@ public class ViewQuestionnaire extends VerticalLayout {
         add(infoTokenLabel, enterTokenTextField, checkAnswerButton);
     }
 
+    /**
+     * metoda zawierająca przycisk wylogowania oraz przeniesienia bezpośrednio na stronę logowania
+     */
     public void logoutButton(){
         Button logoutButton = new Button("Wyloguj się");
         logoutButton.addClickListener(buttonClickEvent -> {
